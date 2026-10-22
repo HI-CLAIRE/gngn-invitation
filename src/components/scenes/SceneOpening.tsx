@@ -27,7 +27,9 @@ export function SceneOpening({ onComplete }: Props) {
   const [phase, setPhase] = useState<Phase>('intro');
   const showDialogue = phase === 'cat' || phase === 'thumbs' || phase === 'done';
   // 대사가 끝난 뒤에도 말풍선 내용이 유지되도록 cat 이후 단계 내내 활성 상태로 둔다
-  const { visibleLines, done: dialogueDone } = useTypewriter(DIALOGUE, showDialogue);
+  // 고양이가 다 올라온 뒤에 타이핑을 시작해야 첫 줄부터 글자가 생기는 게 보인다
+  const [typingReady, setTypingReady] = useState(false);
+  const { visibleLines, done: dialogueDone } = useTypewriter(DIALOGUE, showDialogue && typingReady);
   const thumbsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -39,6 +41,12 @@ export function SceneOpening({ onComplete }: Props) {
   useEffect(() => {
     if (phase !== 'loading') return;
     const t = window.setTimeout(() => setPhase('ready'), reduced ? 300 : 2800);
+    return () => clearTimeout(t);
+  }, [phase, reduced]);
+
+  useEffect(() => {
+    if (phase !== 'cat') return;
+    const t = window.setTimeout(() => setTypingReady(true), reduced ? 100 : 800);
     return () => clearTimeout(t);
   }, [phase, reduced]);
 
@@ -109,7 +117,14 @@ export function SceneOpening({ onComplete }: Props) {
                 {(phase === 'cat' || phase === 'thumbs' || phase === 'done') && (
                   <SpeechBubble>
                     {visibleLines.map((line, i) => (
-                      <p key={i}>{line || '\u00A0'}</p>
+                      <p key={i}>
+                        {line}
+                        {/* 지금 타이핑 중인 줄 끝에 깜빡이는 커서 */}
+                        {!dialogueDone && i === visibleLines.length - 1 && (
+                          <span className="type-caret" aria-hidden />
+                        )}
+                        {!line && dialogueDone && '\u00A0'}
+                      </p>
                     ))}
                   </SpeechBubble>
                 )}

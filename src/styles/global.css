@@ -312,6 +312,22 @@ body {
   margin: 0;
 }
 
+.type-caret {
+  display: inline-block;
+  width: 2px;
+  height: 1.05em;
+  margin-left: 2px;
+  vertical-align: -0.15em;
+  background: var(--color-pink);
+  animation: caret-blink 0.8s steps(1) infinite;
+}
+
+@keyframes caret-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 .random-cat {
   position: fixed;
   bottom: 12%;
@@ -1051,6 +1067,11 @@ body {
   .scene-opening__cat.is-in,
   .gngn-btn:active:not(:disabled) {
     transition-duration: 0.2s !important;
+  }
+
+  .type-caret {
+    animation-duration: 0.8s !important;
+    animation-iteration-count: infinite !important;
   }
 
   .ambient-background__spotlight,
