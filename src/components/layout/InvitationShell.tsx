@@ -12,7 +12,10 @@ export function InvitationShell({ scene, children }: Props) {
     <main className="invitation-shell" id="main-content">
       <p className="scene-eyebrow">{SCENE_LABELS[scene]}</p>
       <div className="scene-container scene-container--enter" key={scene}>
-        <div className="scene-content">{children}</div>
+        {/* 오프닝·마지막 관문은 배경이 화면 끝까지 차도록 여백 없이 */}
+        <div className={`scene-content ${scene === 'invitation' ? '' : 'scene-content--bleed'}`.trim()}>
+          {children}
+        </div>
       </div>
       {scene !== 'opening' && <RandomCatPopup />}
     </main>

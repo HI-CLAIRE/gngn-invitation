@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { IMAGES } from '../../config/images';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { GngnButton } from '../ui/GngnButton';
@@ -16,6 +16,14 @@ const AI_REPORTS: Record<(typeof PROGRAM_POOL)[number], string> = {
     '【AI 분석】 랜덤성은 42%의 서프라이즈 효과를 유발합니다. 선물 교환 모듈 활성화를 권장합니다.',
 };
 
+const EXTRA_TABS = [
+  { id: 'verify', label: '퀸 자격 검증' },
+  { id: 'stats', label: '업적 통계' },
+  { id: 'ai', label: 'AI 추천' },
+] as const;
+
+type ExtraTabId = (typeof EXTRA_TABS)[number]['id'];
+
 type Props = { onComplete: () => void };
 
 export function SceneInvitation({ onComplete }: Props) {
@@ -24,16 +32,7 @@ export function SceneInvitation({ onComplete }: Props) {
   const [verifyProgress, setVerifyProgress] = useState<number | null>(null);
   const [verifyDone, setVerifyDone] = useState(false);
   const [aiPick, setAiPick] = useState<string | null>(null);
-  const nextRef = useRef<HTMLDivElement>(null);
-
-  // AI 분석이 끝나면 다음 단계 버튼으로 시선 유도
-  useEffect(() => {
-    if (!aiPick) return;
-    const t = window.setTimeout(() => {
-      nextRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
-    }, 600);
-    return () => clearTimeout(t);
-  }, [aiPick, reduced]);
+  const [activeTab, setActiveTab] = useState<ExtraTabId>('verify');
 
   const runVerify = () => {
     if (verifyDone || verifyProgress !== null) return;
@@ -76,7 +75,7 @@ export function SceneInvitation({ onComplete }: Props) {
         aria-expanded={!sealed}
         aria-label={sealed ? '봉인된 초대장 — 클릭하여 펼치기' : '초대장 펼침'}
       >
-        <div className="invite-card__seal">{sealed ? 'GN SEALED' : 'GN OFFICIAL'}</div>
+        <div className="invite-card__seal">{sealed ? 'GN SEALED · 탭해서 열기 👆' : 'GN OFFICIAL'}</div>
         <div className="invite-card__body">
           <h1 className="invite-card__title">GNGN — GN Girls Night</h1>
           <p className="invite-card__lead">
@@ -118,45 +117,75 @@ export function SceneInvitation({ onComplete }: Props) {
         </div>
       </button>
 
+      {/* 모바일 한 화면에 들어가도록 부가 패널은 탭으로 하나씩 노출 */}
       <div className="invite-extras">
-        <article className="invite-panel">
-          <h2>퀸 자격 검증 센터</h2>
-          <img src={IMAGES.queenEmoji} alt="" className="invite-panel__queen" />
-          <GngnButton variant="pink" onClick={runVerify} disabled={verifyProgress !== null && !verifyDone}>
-            퀸 자격 검증 시작
-          </GngnButton>
-          {verifyProgress !== null && (
-            <div className="verify-bar" role="progressbar" aria-valuenow={verifyProgress} aria-valuemin={0} aria-valuemax={100}>
-              <div className="verify-bar__fill" style={{ width: `${verifyProgress}%` }} />
-              <span>{verifyProgress}%</span>
-            </div>
-          )}
-          {verifyDone && (
-            <p className="verify-result">검증 완료: 퀸 등급 측정 불가 (너무 높음)</p>
-          )}
-        </article>
+        <div className="invite-tabs" role="tablist" aria-label="퀸 전용 부가 기능">
+          {EXTRA_TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              role="tab"
+              id={`invite-tab-${tab.id}`}
+              aria-selected={activeTab === tab.id}
+              aria-controls="invite-tabpanel"
+              className={`invite-tabs__tab ${activeTab === tab.id ? 'is-active' : ''}`.trim()}
+              onClick={() => setActiveTab(tab.id)}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
 
-        <article className="invite-panel">
-          <h2>금년도 업적 통계</h2>
-          <p className="invite-panel__disclaimer">※ 아래 수치는 100% 가짜 통계입니다.</p>
-          <ul className="stat-cards">
-            {stats.map((s) => (
-              <li key={s.label} className="stat-card">
-                <span className="stat-card__label">{s.label}</span>
-                <span className="stat-card__value">{s.value}</span>
-              </li>
-            ))}
-          </ul>
-        </article>
+        <article
+          className="invite-panel"
+          role="tabpanel"
+          id="invite-tabpanel"
+          aria-labelledby={`invite-tab-${activeTab}`}
+        >
+          {activeTab === 'verify' && (
+            <>
+              <div className="invite-panel__row">
+                <img src={IMAGES.queenEmoji} alt="" className="invite-panel__queen" />
+                <GngnButton variant="pink" onClick={runVerify} disabled={verifyProgress !== null && !verifyDone}>
+                  퀸 자격 검증 시작
+                </GngnButton>
+              </div>
+              {verifyProgress !== null && (
+                <div className="verify-bar" role="progressbar" aria-valuenow={verifyProgress} aria-valuemin={0} aria-valuemax={100}>
+                  <div className="verify-bar__fill" style={{ width: `${verifyProgress}%` }} />
+                  <span>{verifyProgress}%</span>
+                </div>
+              )}
+              {verifyDone && (
+                <p className="verify-result">검증 완료: 퀸 등급 측정 불가 (너무 높음)</p>
+              )}
+            </>
+          )}
 
-        <article className="invite-panel">
-          <h2>AI 추천 프로그램</h2>
-          <GngnButton onClick={recommendProgram}>AI 분석 실행</GngnButton>
-          {aiPick && <p className="ai-report">{aiPick}</p>}
+          {activeTab === 'stats' && (
+            <>
+              <p className="invite-panel__disclaimer">※ 아래 수치는 100% 가짜 통계입니다.</p>
+              <ul className="stat-cards">
+                {stats.map((s) => (
+                  <li key={s.label} className="stat-card">
+                    <span className="stat-card__label">{s.label}</span>
+                    <span className="stat-card__value">{s.value}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+
+          {activeTab === 'ai' && (
+            <>
+              <GngnButton onClick={recommendProgram}>AI 분석 실행</GngnButton>
+              {aiPick && <p className="ai-report">{aiPick}</p>}
+            </>
+          )}
         </article>
       </div>
 
-      <div ref={nextRef} className="scene-invitation__next-wrap">
+      <div className="scene-invitation__next-wrap">
         {aiPick && <p className="scene-invitation__next-hint">분석 완료. 이제 마지막 관문만 남았습니다 👇</p>}
         <GngnButton
           variant="dark"

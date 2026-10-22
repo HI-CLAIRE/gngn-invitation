@@ -103,7 +103,9 @@ export function SceneOpening({ onComplete }: Props) {
           >
             {showCat && (
               <div className={`scene-opening__cat ${showCat ? 'is-in' : ''}`}>
-                <img src={IMAGES.mainCat} alt="GNGN AI 안내 고양이" className="scene-opening__cat-img" />
+                <span className="scene-opening__cat-frame">
+                  <img src={IMAGES.mainCat} alt="GNGN AI 안내 고양이" className="scene-opening__cat-img" />
+                </span>
                 {(phase === 'cat' || phase === 'thumbs' || phase === 'done') && (
                   <SpeechBubble>
                     {visibleLines.map((line, i) => (
@@ -116,7 +118,9 @@ export function SceneOpening({ onComplete }: Props) {
 
             {phase === 'thumbs' || phase === 'done' ? (
               <div ref={thumbsRef} className="scene-opening__thumbs">
-                <img src={IMAGES.thumbsUpCat} alt="" className="scene-opening__thumbs-img" />
+                <span className="scene-opening__thumbs-frame">
+                  <img src={IMAGES.thumbsUpCat} alt="" className="scene-opening__thumbs-img" />
+                </span>
                 <div className="scene-opening__thumbs-text">
                   <p>네. 그냥 다 같이 놀자는 뜻입니다.</p>
                   <p>감사합니다. 👍</p>

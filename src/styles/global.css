@@ -23,8 +23,15 @@ body {
   min-height: 100%;
 }
 
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
 body {
   min-height: 100vh;
+  min-height: 100dvh;
+  -webkit-tap-highlight-color: transparent;
   background: #18080d;
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -33,6 +40,7 @@ body {
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 .skip-link {
@@ -52,6 +60,7 @@ body {
 
 .viewport {
   min-height: 100vh;
+  min-height: 100dvh;
   position: relative;
   display: flex;
   justify-content: center;
@@ -129,6 +138,9 @@ body {
   width: 100%;
   max-width: var(--shell-width);
   min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
   margin-inline: auto;
   overflow-x: clip;
   background: var(--color-cream);
@@ -146,10 +158,14 @@ body {
   text-transform: uppercase;
   color: var(--color-gold);
   background: linear-gradient(180deg, #2a0812, #1a050c);
+  padding-top: max(0.65rem, env(safe-area-inset-top));
 }
 
+/* 남은 화면 높이를 장면이 꽉 채우도록 */
 .scene-container {
-  min-height: calc(100vh - 2rem);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .scene-container--enter {
@@ -168,7 +184,20 @@ body {
 }
 
 .scene-content {
-  padding: 1rem 1rem 2.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem 1rem 0;
+}
+
+.scene-content--bleed {
+  padding: 0;
+}
+
+.scene-content > section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .gngn-btn {
@@ -235,28 +264,48 @@ body {
 .speech-bubble {
   position: relative;
   width: min(100%, 320px);
-  margin: 0 auto;
+  margin: 0.9rem auto 0;
+  padding: 0.85rem 1rem;
+  background: #fff;
+  border: 2px solid #1a0a10;
+  border-radius: 22px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
 }
 
-.speech-bubble__bg {
-  width: 100%;
-  height: auto;
-  display: block;
-  mix-blend-mode: multiply;
-  filter: contrast(1.05);
+/* 위쪽 꼬리 */
+.speech-bubble::before,
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  border-style: solid;
+  transform: translateX(-50%);
+}
+
+.speech-bubble::before {
+  top: -14px;
+  border-width: 0 12px 14px;
+  border-color: transparent transparent #1a0a10;
+}
+
+.speech-bubble::after {
+  top: -10px;
+  border-width: 0 10px 12px;
+  border-color: transparent transparent #fff;
 }
 
 .speech-bubble__text {
-  position: absolute;
-  inset: 12% 10% 22% 10%;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 0.35rem;
-  font-size: 0.78rem;
+  gap: 0.3rem;
+  /* 타자 효과로 줄이 늘어날 때 레이아웃이 출렁이지 않도록 높이 예약 */
+  min-height: 6.6em;
+  font-size: 0.8rem;
   font-weight: 500;
   text-align: center;
   line-height: 1.45;
+  word-break: keep-all;
 }
 
 .speech-bubble__text p {
@@ -312,8 +361,9 @@ body {
 /* Scene 1 */
 .scene-opening__stage {
   position: relative;
-  min-height: 70vh;
-  margin: -1rem -1rem 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
   background-size: cover;
   background-position: center top;
   overflow: hidden;
@@ -389,7 +439,7 @@ body {
 .scene-opening__hero {
   position: relative;
   z-index: 4;
-  min-height: 70vh;
+  flex: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -462,14 +512,15 @@ body {
 .scene-opening__inner {
   position: relative;
   z-index: 4;
-  min-height: 75vh;
-  padding: 1.5rem 1rem 2rem;
+  flex: 1;
+  padding: 1.25rem 1rem calc(1.25rem + env(safe-area-inset-bottom));
   background-size: cover;
   background-position: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  justify-content: center;
+  gap: 0.9rem;
 }
 
 .scene-opening__cat {
@@ -492,30 +543,63 @@ body {
   }
 }
 
+/* 흰 배경 사진을 금테 원형 액자로 */
+.scene-opening__cat-frame,
+.scene-opening__thumbs-frame {
+  display: block;
+  overflow: hidden;
+  border-radius: 50%;
+  background: #fff;
+  border: 3px solid var(--color-gold);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.35);
+}
+
+.scene-opening__cat-frame {
+  width: clamp(104px, 18dvh, 136px);
+  aspect-ratio: 1;
+}
+
+.scene-opening__cat-img,
+.scene-opening__thumbs-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .scene-opening__cat-img {
-  width: min(200px, 55vw);
-  height: auto;
-  object-fit: contain;
-  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.25));
+  object-position: center 48%;
+  /* 원본 사진 하단의 잘린 경계가 원 안에 보이지 않도록 확대·이동 */
+  transform: scale(1.42) translateY(7%);
 }
 
 .scene-opening__thumbs {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: min(100%, 320px);
+  padding: 0.6rem 0.9rem;
+  background: rgba(255, 250, 247, 0.94);
+  border-radius: 16px;
   animation: scene-enter 0.5s ease;
 }
 
-.scene-opening__thumbs-img {
-  width: min(140px, 40vw);
-  mix-blend-mode: multiply;
+.scene-opening__thumbs-frame {
+  flex: none;
+  width: 60px;
+  height: 60px;
+  border-width: 2px;
+  box-shadow: none;
 }
 
 .scene-opening__thumbs-text {
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-align: left;
 }
 
-.scene-opening__next {
-  margin-top: 0.5rem;
+.scene-opening__thumbs-text p {
+  margin: 0;
 }
 
 /* Scene 2 */
@@ -540,7 +624,7 @@ body {
 }
 
 .invite-card__body {
-  padding: 1.25rem;
+  padding: 1rem 1.1rem;
   background: linear-gradient(145deg, #fff9f0 0%, #f5e6c8 50%, #e8d4a8 100%);
   border: 2px solid var(--color-gold);
   border-radius: 4px;
@@ -572,22 +656,30 @@ body {
 }
 
 .invite-card__title {
-  margin: 0 0 0.5rem;
+  margin: 0 0 0.25rem;
   font-family: var(--font-display);
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   color: var(--color-deep-red);
 }
 
 .invite-card__lead {
-  margin: 0 0 1rem;
-  font-size: 0.85rem;
+  margin: 0 0 0.75rem;
+  font-size: 0.8rem;
 }
 
 .invite-card__details {
   margin: 0;
   display: grid;
-  gap: 0.65rem;
-  font-size: 0.8rem;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+/* 항목명 | 내용 2열로 세로 길이 절약 */
+.invite-card__details > div {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  gap: 0.5rem;
 }
 
 .invite-card__details dt {
@@ -596,11 +688,12 @@ body {
 }
 
 .invite-card__details dd {
-  margin: 0.15rem 0 0;
+  margin: 0;
+  word-break: keep-all;
 }
 
 .invite-card__footer {
-  margin: 1.25rem 0 0;
+  margin: 0.85rem 0 0;
   text-align: center;
   font-size: 0.7rem;
   letter-spacing: 0.15em;
@@ -608,28 +701,58 @@ body {
 }
 
 .invite-extras {
-  margin-top: 1.5rem;
+  margin-top: 1rem;
+}
+
+.invite-tabs {
   display: grid;
-  gap: 1rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: #f3e6ea;
+  border-radius: 999px;
+}
+
+.invite-tabs__tab {
+  min-height: 40px;
+  padding: 0 0.25rem;
+  border: none;
+  border-radius: 999px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-burgundy);
+  cursor: pointer;
+}
+
+.invite-tabs__tab.is-active {
+  background: var(--color-burgundy);
+  color: #fff;
+}
+
+.invite-tabs__tab:focus-visible {
+  outline: 3px solid var(--color-pink);
+  outline-offset: 1px;
 }
 
 .invite-panel {
-  padding: 1rem;
-  border-radius: 8px;
+  margin-top: 0.6rem;
+  padding: 0.85rem;
+  border-radius: 12px;
   border: 1px solid rgba(92, 18, 36, 0.2);
   background: #fff;
 }
 
-.invite-panel h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1rem;
-  color: var(--color-deep-red);
+.invite-panel__row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
 }
 
 .invite-panel__queen {
-  width: 120px;
-  display: block;
-  margin: 0 auto 0.75rem;
+  flex: none;
+  width: 64px;
   mix-blend-mode: multiply;
 }
 
@@ -676,7 +799,7 @@ body {
   margin: 0;
   padding: 0;
   display: grid;
-  gap: 0.5rem;
+  gap: 0.35rem;
 }
 
 .stat-card {
@@ -703,8 +826,14 @@ body {
   border-left: 3px solid var(--color-gold);
 }
 
+/* 다음 버튼은 화면 하단에 고정해 스크롤 없이도 항상 보이게 */
 .scene-invitation__next-wrap {
-  margin-top: 1.5rem;
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  margin-top: auto;
+  padding: 1.25rem 0 calc(0.85rem + env(safe-area-inset-bottom));
+  background: linear-gradient(180deg, rgba(255, 250, 247, 0), var(--color-cream) 35%);
 }
 
 .scene-invitation__next-hint {
@@ -738,12 +867,11 @@ body {
 /* Scene 3 — 마지막 관문 */
 .scene-gate {
   position: relative;
+  justify-content: center;
   text-align: center;
-  padding: 2rem 0.5rem 3rem;
+  padding: 2rem 1rem calc(2rem + env(safe-area-inset-bottom));
   color: #fff;
   background: linear-gradient(180deg, #1a050c 0%, #4a0818 45%, #1a050c 100%);
-  margin: -1rem -1rem -2.5rem;
-  min-height: 70vh;
 }
 
 .scene-gate__veil {
