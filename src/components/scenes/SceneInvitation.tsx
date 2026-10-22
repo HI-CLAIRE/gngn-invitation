@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { IMAGES } from '../../config/images';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { GngnButton } from '../ui/GngnButton';
@@ -24,6 +24,16 @@ export function SceneInvitation({ onComplete }: Props) {
   const [verifyProgress, setVerifyProgress] = useState<number | null>(null);
   const [verifyDone, setVerifyDone] = useState(false);
   const [aiPick, setAiPick] = useState<string | null>(null);
+  const nextRef = useRef<HTMLDivElement>(null);
+
+  // AI 분석이 끝나면 다음 단계 버튼으로 시선 유도
+  useEffect(() => {
+    if (!aiPick) return;
+    const t = window.setTimeout(() => {
+      nextRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+    }, 600);
+    return () => clearTimeout(t);
+  }, [aiPick, reduced]);
 
   const runVerify = () => {
     if (verifyDone || verifyProgress !== null) return;
@@ -79,7 +89,7 @@ export function SceneInvitation({ onComplete }: Props) {
             </div>
             <div>
               <dt>날짜</dt>
-              <dd>참석자 투표로 결정</dd>
+              <dd>오픈카톡방 투표로 결정</dd>
             </div>
             <div>
               <dt>장소</dt>
@@ -101,7 +111,7 @@ export function SceneInvitation({ onComplete }: Props) {
             </div>
             <div>
               <dt>참석 방법</dt>
-              <dd>날짜 투표 후 오픈 카톡방 입장</dd>
+              <dd>오픈카톡방 입장</dd>
             </div>
           </dl>
           <p className="invite-card__footer">ATTENDANCE IS HIGHLY RECOMMENDED.</p>
@@ -146,9 +156,16 @@ export function SceneInvitation({ onComplete }: Props) {
         </article>
       </div>
 
-      <GngnButton variant="dark" className="scene-invitation__next" onClick={onComplete}>
-        퀸 일정 투표하러 가기
-      </GngnButton>
+      <div ref={nextRef} className="scene-invitation__next-wrap">
+        {aiPick && <p className="scene-invitation__next-hint">분석 완료. 이제 마지막 관문만 남았습니다 👇</p>}
+        <GngnButton
+          variant="dark"
+          className={`scene-invitation__next ${aiPick ? 'is-highlighted' : ''}`.trim()}
+          onClick={onComplete}
+        >
+          마지막 관문으로
+        </GngnButton>
+      </div>
     </section>
   );
 }

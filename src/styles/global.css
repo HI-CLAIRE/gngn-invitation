@@ -197,7 +197,6 @@ body {
 }
 
 .gngn-btn:focus-visible,
-.vote-chip:focus-visible,
 .invite-card:focus-visible {
   outline: 3px solid var(--color-pink);
   outline-offset: 2px;
@@ -704,225 +703,39 @@ body {
   border-left: 3px solid var(--color-gold);
 }
 
+.scene-invitation__next-wrap {
+  margin-top: 1.5rem;
+}
+
+.scene-invitation__next-hint {
+  margin: 0 0 0.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-deep-red);
+  animation: title-pop 0.6s ease;
+}
+
+.scene-invitation__next.is-highlighted {
+  animation: next-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes next-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 46, 136, 0.55);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(255, 46, 136, 0);
+  }
+}
+
 .scene-invitation__next {
   display: flex;
   width: 100%;
-  margin-top: 1.5rem;
 }
 
-/* Scene 3 */
-.scene-voting__header h1 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.35rem;
-  color: var(--color-deep-red);
-  letter-spacing: 0.04em;
-}
-
-.scene-voting__tagline,
-.scene-voting__sub,
-.scene-voting__ai {
-  margin: 0.35rem 0 0;
-  font-size: 0.82rem;
-}
-
-.scene-voting__deadline {
-  margin: 0.75rem 0 0;
-  font-size: 0.75rem;
-  color: #555;
-}
-
-.scene-voting__closed {
-  color: var(--color-pink);
-}
-
-.vote-block {
-  margin: 1.25rem 0 0;
-  padding: 0;
-  border: none;
-}
-
-.vote-block legend {
-  font-weight: 700;
-  font-size: 0.9rem;
-  padding: 0 0 0.5rem;
-}
-
-.vote-month h3 {
-  margin: 0.5rem 0 0.35rem;
-  font-size: 0.85rem;
-  color: var(--color-burgundy);
-}
-
-.vote-chips {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.vote-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 0.65rem;
-  border-radius: 8px;
-  border: 2px solid #ddd;
-  background: #fff;
-  font-size: 0.75rem;
-  cursor: pointer;
-}
-
-.vote-chip.is-selected {
-  border-color: var(--color-pink);
-  background: #fff0f7;
-  box-shadow: 0 0 0 1px var(--color-pink);
-}
-
-.vote-chip__count {
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--color-gold);
-  background: #2a0812;
-  padding: 0.1rem 0.35rem;
-  border-radius: 999px;
-}
-
-.vote-radio-row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-}
-
-.vote-radio {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.vote-note {
-  display: block;
-  margin-top: 0.75rem;
-  font-size: 0.8rem;
-}
-
-.vote-note textarea {
-  width: 100%;
-  margin-top: 0.35rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-  font-family: inherit;
-  resize: vertical;
-}
-
-.vote-checklist {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-  display: grid;
-  gap: 0.35rem;
-}
-
-.vote-check {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem;
-  border-radius: 6px;
-  border: 1px solid #e5e5e5;
-  font-size: 0.82rem;
-  cursor: pointer;
-}
-
-.vote-check.is-selected {
-  border-color: var(--color-deep-red);
-  background: #fff5f8;
-}
-
-.vote-check__count {
-  margin-left: auto;
-  font-size: 0.65rem;
-  font-weight: 700;
-  color: var(--color-gold);
-}
-
-.vote-confirm {
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 2px dashed var(--color-gold);
-  border-radius: 8px;
-  background: #fffcf5;
-}
-
-.vote-confirm h2 {
-  margin: 0 0 0.75rem;
-  font-size: 1rem;
-}
-
-.vote-confirm dl {
-  margin: 0;
-  font-size: 0.85rem;
-}
-
-.vote-confirm dt {
-  font-weight: 700;
-  margin-top: 0.5rem;
-}
-
-.vote-confirm dd {
-  margin: 0.15rem 0 0;
-}
-
-.vote-confirm dd ul {
-  margin: 0;
-  padding-left: 1.1rem;
-}
-
-.vote-confirm__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-}
-
-.vote-error {
-  color: #b00020;
-  font-size: 0.85rem;
-}
-
-.vote-success {
-  text-align: center;
-  margin-top: 1rem;
-}
-
-.vote-success__img {
-  width: 120px;
-  mix-blend-mode: multiply;
-}
-
-.vote-success__meta {
-  font-size: 0.85rem;
-}
-
-.vote-tally {
-  margin-top: 1.5rem;
-  padding: 0.75rem;
-  background: #f3f3f3;
-  border-radius: 6px;
-  font-size: 0.8rem;
-}
-
-.vote-tally h2 {
-  margin: 0 0 0.35rem;
-  font-size: 0.9rem;
-}
-
-/* Scene 4 */
+/* Scene 3 — 마지막 관문 */
 .scene-gate {
   position: relative;
   text-align: center;
@@ -960,10 +773,125 @@ body {
   opacity: 0.95;
 }
 
-.scene-gate__cta {
+.scene-gate__question {
   position: relative;
-  margin-top: 1.5rem;
-  width: min(100%, 340px);
+  margin: 1.75rem 0 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-gold-light);
+}
+
+.scene-gate__choices {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.scene-gate__choices .gngn-btn {
+  min-height: 48px;
+}
+
+.scene-gate__yes {
+  min-width: min(100%, 200px);
+}
+
+.scene-gate__give-up {
+  position: relative;
+  margin: 1.25rem auto 0;
+  max-width: 30ch;
+  padding: 0.65rem 0.9rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #2a1500;
+  background: var(--color-gold-light);
+  border-radius: 999px;
+  animation: title-pop 0.6s ease;
+}
+
+/* 도망가는 아니오 버튼 */
+.runaway-no {
+  position: relative;
+  min-width: 7rem;
+  white-space: nowrap;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.runaway-no--flying {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  margin: 0;
+  transition: transform 0.45s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* 날아다니는 동안 :active 눌림 효과가 이동 transform을 덮어쓰지 않도록 */
+.gngn-btn.runaway-no:active:not(:disabled) {
+  animation: none;
+}
+
+.runaway-no__placeholder {
+  display: inline-block;
+}
+
+.runaway-no__wing {
+  position: absolute;
+  top: 50%;
+  width: 34px;
+  height: 28px;
+  margin-top: -20px;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+
+.runaway-no__wing--left {
+  right: calc(100% - 4px);
+  transform-origin: right center;
+  animation:
+    wing-sprout 0.3s ease-out both,
+    wing-flap-left 0.18s ease-in-out 0.3s infinite alternate;
+}
+
+.runaway-no__wing--right {
+  left: calc(100% - 4px);
+  transform-origin: left center;
+  animation:
+    wing-sprout 0.3s ease-out both,
+    wing-flap-right 0.18s ease-in-out 0.3s infinite alternate;
+}
+
+@keyframes wing-sprout {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+@keyframes wing-flap-left {
+  from {
+    transform: rotate(18deg);
+  }
+  to {
+    transform: rotate(-22deg);
+  }
+}
+
+@keyframes wing-flap-right {
+  from {
+    transform: rotate(-18deg);
+  }
+  to {
+    transform: rotate(22deg);
+  }
 }
 
 .scene-gate__alert {

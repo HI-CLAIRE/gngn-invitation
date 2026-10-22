@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { IMAGES } from '../../config/images';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 import { useTypewriter } from '../../hooks/useTypewriter';
@@ -26,7 +26,9 @@ export function SceneOpening({ onComplete }: Props) {
   const reduced = useReducedMotion();
   const [phase, setPhase] = useState<Phase>('intro');
   const showDialogue = phase === 'cat' || phase === 'thumbs' || phase === 'done';
-  const { visibleLines, done: dialogueDone } = useTypewriter(DIALOGUE, showDialogue && phase === 'cat');
+  // 대사가 끝난 뒤에도 말풍선 내용이 유지되도록 cat 이후 단계 내내 활성 상태로 둔다
+  const { visibleLines, done: dialogueDone } = useTypewriter(DIALOGUE, showDialogue);
+  const thumbsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (phase !== 'intro') return;
@@ -46,6 +48,15 @@ export function SceneOpening({ onComplete }: Props) {
       return () => clearTimeout(t);
     }
   }, [phase, dialogueDone, reduced]);
+
+  // 엄지척 고양이와 다음 버튼이 화면 아래에 가려지지 않도록 스크롤
+  useEffect(() => {
+    if (phase !== 'thumbs') return;
+    const t = window.setTimeout(() => {
+      thumbsRef.current?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'center' });
+    }, 300);
+    return () => clearTimeout(t);
+  }, [phase, reduced]);
 
   useEffect(() => {
     if (phase !== 'curtain-open') return;
@@ -104,7 +115,7 @@ export function SceneOpening({ onComplete }: Props) {
             )}
 
             {phase === 'thumbs' || phase === 'done' ? (
-              <div className="scene-opening__thumbs">
+              <div ref={thumbsRef} className="scene-opening__thumbs">
                 <img src={IMAGES.thumbsUpCat} alt="" className="scene-opening__thumbs-img" />
                 <div className="scene-opening__thumbs-text">
                   <p>네. 그냥 다 같이 놀자는 뜻입니다.</p>

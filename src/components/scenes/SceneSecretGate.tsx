@@ -1,9 +1,14 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { siteConfig } from '../../config/site';
 import { GngnButton } from '../ui/GngnButton';
+import { RunawayNoButton } from '../ui/RunawayNoButton';
+
+/** 아니오를 이만큼 시도하면 포기 안내 표시 */
+const GIVE_UP_ATTEMPTS = 7;
 
 export function SceneSecretGate() {
   const [message, setMessage] = useState<string | null>(null);
+  const [showGiveUp, setShowGiveUp] = useState(false);
 
   const handleEnter = () => {
     const url = siteConfig.kakaoOpenChatUrl;
@@ -26,6 +31,10 @@ export function SceneSecretGate() {
     }
   };
 
+  const handleNoAttempt = useCallback((attempts: number) => {
+    if (attempts >= GIVE_UP_ATTEMPTS) setShowGiveUp(true);
+  }, []);
+
   return (
     <section className="scene-gate" aria-label="THE SECRET GATE">
       <div className="scene-gate__veil" />
@@ -33,19 +42,25 @@ export function SceneSecretGate() {
       <p className="scene-gate__copy">
         초대장 확인 완료. 퀸 자격 검증 완료. 이제 마지막 관문만 남았습니다.
       </p>
-      <p className="scene-gate__copy">
-        오픈 카톡방에 입장하여 동료 퀸들을 만나세요.
-      </p>
-      <GngnButton variant="gold" className="scene-gate__cta" onClick={handleEnter}>
-        퀸들의 비밀 집회 입장하기 👑
-      </GngnButton>
+      <p className="scene-gate__question">GNGN 퀸 집회에 참석하시겠습니까?</p>
+      <div className="scene-gate__choices">
+        <GngnButton variant="gold" className="scene-gate__yes" onClick={handleEnter}>
+          예, 입장할게요 👑
+        </GngnButton>
+        <RunawayNoButton onAttempt={handleNoAttempt} />
+      </div>
+      {showGiveUp && (
+        <p className="scene-gate__give-up" role="status">
+          포기하세요. 답은 &lsquo;예&rsquo;입니다 👑
+        </p>
+      )}
       {message && (
         <p className="scene-gate__alert" role="alert">
           {message}
         </p>
       )}
       <p className="scene-gate__footnote">
-        AI의 분석 결과, 이 버튼을 누를 확률은 99.9%입니다.
+        예를 누르면 오픈 카톡방으로 이동합니다. AI 분석 결과, 예를 누를 확률은 100%입니다.
       </p>
     </section>
   );
